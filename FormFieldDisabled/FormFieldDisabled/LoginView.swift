@@ -40,7 +40,7 @@ struct LoginView: View {
             .background((userName.isEmpty || password.isEmpty) ? .gray : .blue)
             .foregroundStyle(.white)
             .clipShape(Capsule())
-            .disabled(userName.isEmpty || password.isEmpty ? true : false)
+            .disabled(userName.isEmpty || password.isEmpty)
         }
         .padding()
     }
