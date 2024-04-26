@@ -28,6 +28,7 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+// Preview 이름 지정
+#Preview("Main") {
     ContentView()
 }
