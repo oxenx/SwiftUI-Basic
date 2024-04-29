@@ -40,13 +40,24 @@ final class AuthenticationViewModel {
     var usephotoURL: URL? { authResult?.user.photoURL }
     
     func logOut() {
-        
+        GIDSignIn.sharedInstance.signOut()
+        GIDSignIn.sharedInstance.disconnect()
+        try? Auth.auth().signOut()
+        authResult = nil
+        state = .signedOut
     }
     
+    // 로그인 여부 확인
     func restorePreviousSignIn() {
-        
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            if let error { print("Error: = \(error.localizedDescription)") }
+            Task {
+                await self.signIn(user: user)
+            }
+        }
     }
     
+    // 구글에 로그인하는 함수
     func login() {
         state = .busy
         guard let clientID = FirebaseApp.app()?.options.clientID,
@@ -64,6 +75,7 @@ final class AuthenticationViewModel {
         }
     }
     
+    // 로그인한 구글 유저를 파이어베이스에 등록하는 것
     private func signIn(user: GIDGoogleUser?) async {
         guard let user, let idToken = user.idToken else {
             state = .signedOut
